@@ -1,5 +1,0 @@
-Sample	Replicates	Filename	Name
-start	2	start1.fastq	start1
-start	2	start2.fastq	start2
-test	2	test1.fastq	test1
-test	2	test2.fastq	test2
