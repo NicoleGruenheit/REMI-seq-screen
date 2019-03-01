@@ -145,10 +145,9 @@ shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
                               )
                               
                               
-                            ),
-                            br(),
-                            hr(),
-                            br(),
+                            )
+                   ),
+									 tabPanel("Step 6: Download results",
                             fluidRow(
                               column(12,
                                      DT::dataTableOutput("fold", width = "100%", height = "100%")
@@ -160,15 +159,5 @@ shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
                               			 downloadButton("downloadData_FC", "Download table")
                               )
                             )
-                   ),
-									 tabPanel("test",
-									 				
-									 				 fluidRow( 
-									 				 	
-									 				 	
-									 				 	
-									 				 	
-									 				 )
-									 				 
-									 )
+                   )
 ))

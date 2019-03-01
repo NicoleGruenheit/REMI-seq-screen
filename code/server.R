@@ -82,7 +82,7 @@ server <- function(input, output,session) {
       f = data.frame("filename","reads","reads_with_tags","percentage_reads_with_tags","unique_tags","tags_in_inverted_repeat","not_unique_tags")
       DT::datatable(f, extensions = c('ColReorder'), rownames = FALSE, options = list(scrollX = T, dom = 'rltip', colReorder = TRUE,fixedHeader = TRUE),escape = F)
     }else{
-      directory = input$directory
+      directory = readDirectoryInput(session, 'directory')
       DT::datatable(stats$df_data, extensions = c('ColReorder'), rownames = FALSE, options = list(scrollX = T, dom = 'rltip', colReorder = TRUE,fixedHeader = TRUE),escape = F)
     }  
   })
@@ -93,7 +93,7 @@ server <- function(input, output,session) {
   
   positions = reactive({
     comb =  input$radio
-    directory = input$directory
+    directory = readDirectoryInput(session, 'directory')
     cutoff = input$cutoff
     norm$df_data = normalise_reads(pos$df_data,comb,cutoff)
     test = as.data.table(norm$df_data)
@@ -115,7 +115,7 @@ server <- function(input, output,session) {
   
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste(input$directory, ".csv", sep = "")
+      paste(readDirectoryInput(session, 'directory'), ".csv", sep = "")
     },
     content = function(file) {
       write.table(positions(), file, row.names = FALSE,sep="\t")
@@ -154,7 +154,7 @@ server <- function(input, output,session) {
   })
   
   output$downloadPlots1 <- downloadHandler(
-    filename = function() { paste(input$directory, '_correlation_plots.pdf', sep='') },
+    filename = function() { paste(readDirectoryInput(session, 'directory'), '_correlation_plots.pdf', sep='') },
     content = function(file) {
       pdf(file)
       print(Plot1())
@@ -162,7 +162,7 @@ server <- function(input, output,session) {
     }
   )
   
-  #step 5
+  #step 5 and 6
   folds = reactive({
     validate(
       need(input$file1 != "", "Please load the experimental design on tab 1")
@@ -192,7 +192,7 @@ server <- function(input, output,session) {
   
   output$downloadData_FC <- downloadHandler(
     filename = function() {
-      paste(input$directory, ".csv", sep = "")
+      paste(readDirectoryInput(session, 'directory'), ".csv", sep = "")
     },
     content = function(file) {
       write.table(folds(), file, row.names = FALSE,sep="\t")
@@ -201,15 +201,18 @@ server <- function(input, output,session) {
   
   Plot2 <- reactive({
     choice1 = input$samplePlot
-    print(choice1) 
     validate(
       need(input$samplePlot != input$sample5, "Please choose a different sample")
     )
-    help = folds() %>% select(contains("Chromosome","Position",choice1)) %>% select("Chromosome","Position",contains(".y"))
+    help = folds() 
+    help = help %>% dplyr:: select("Chromosome","Position",starts_with("test")) 
+    help = select(help,"Chromosome","Position",contains(".y"))
     help = help %>% gather(sample,value,3:dim(help)[2])
     help = filter(help,value==1)
     data = folds() %>% select(contains(choice1)) %>% select(contains(".x"))
+    print("test2")
     reps = dim(data)[2]
+    print(reps)
     data1 <- data.frame(x=data[,1], y=data[,2], cor=paste("1","2",sep="_"))
     if(reps > 2){
       for(i in 1:reps) {
