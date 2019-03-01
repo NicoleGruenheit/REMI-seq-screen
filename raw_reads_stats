@@ -1,0 +1,5 @@
+filename	reads	reads_with_tags	percentage_reads_with_tags	unique_tags	tags_in_inverted_repeat	not_unique_tags
+start1.fastq.gz	3000000	2518642	0.84	17728	1032	18472
+start2.fastq.gz	3000000	2549577	0.85	15345	919	17403
+test1.fastq.gz	3000000	2174805	0.72	2858	203	4389
+test2.fastq.gz	3000000	1983192	0.66	2357	153	4181
