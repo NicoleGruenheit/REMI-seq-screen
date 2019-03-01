@@ -11,6 +11,7 @@ library(shiny)
 library(ggplot2)
 library(grid)
 library(shinythemes)
+library('shinyDirectoryInput')
 
 # Define UI for application that analyses REMI-seq screen data
 shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
@@ -59,7 +60,8 @@ shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
                             fluidRow(
                               column(6,align="center",
                                       h4('3. Load the files:'),
-                                      textInput("directory", "Choose directory that contains fastq files:",value = "")
+                                      #textInput("directory", "Choose directory that contains fastq files:",value = "")
+                              			 directoryInput('directory', label = 'Choose directory that contains fastq files:',value = '../raw_reads')
                               )
                             ),
                             br(),
@@ -129,15 +131,19 @@ shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
                             
                    ),
                    tabPanel("Step 5: Check for enriched and depleted mutants",
+                   				 
+                   				 
+                   				
                             fluidRow(
-                              
+                            	
                               column(12,
                                      h3('Select the sample that you want to plot:'),
                                      selectInput("samplePlot", "",choices= 1:3)
                               ),
                               column(12,
-                                     downloadButton("downloadData_FC", "Download table")
+                              			 plotOutput("plot2")
                               )
+                              
                               
                             ),
                             br(),
@@ -149,7 +155,20 @@ shinyUI(navbarPage(theme = shinytheme("cerulean"),"REMI-seq analyser",
                               ),
                               column(12,
                                      DT::dataTableOutput("sumstats", width = "100%", height = "100%")
+                              ),
+                              column(12,
+                              			 downloadButton("downloadData_FC", "Download table")
                               )
                             )
-                   )
+                   ),
+									 tabPanel("test",
+									 				
+									 				 fluidRow( 
+									 				 	
+									 				 	
+									 				 	
+									 				 	
+									 				 )
+									 				 
+									 )
 ))

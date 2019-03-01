@@ -63,7 +63,7 @@ One of the main errors in selection experiments is if two biological replicates 
 
 There are also options to exclude mutants with very low read counts, which can decrease the correlation. Also, mutants that show very different read counts in the replicates can be excluded. The plots can be downloaded byt clicking on the download button below the plots.
 
-If the displayed scatter plot show sufficient correlation (usually > 0.6), you can proceed to step 5. 
+If the displayed scatter plot show sufficient correlation (usually > 0.6), you can proceed to step 5. If not, it's better to try and find out what went wrong in the screen first.
 
 #### Step 5: Determine over- and underrepresented mutants
 

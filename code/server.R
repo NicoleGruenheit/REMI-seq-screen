@@ -36,25 +36,44 @@ server <- function(input, output,session) {
   stats <- reactiveValues(df_data = NULL)
   pos <- reactiveValues(df_data = NULL)
   s <- reactiveValues(df_data = NULL)
+  directory <- reactiveValues(df_data = NULL)
+  
+  observeEvent(ignoreNULL = TRUE,
+  	eventExpr = {
+  		input$directory
+  	},
+  	handlerExpr = {
+  		if (input$directory > 0) {
+  			# condition prevents handler execution on initial app launch
+  			directory = choose.dir(default = readDirectoryInput(session, 'directory'),
+  												caption="Choose a directory...")
+  			updateDirectoryInput(session, 'directory', value = directory)
+  		}
+  	}
+  )
+  
+  output$directory = renderText({
+  	readDirectoryInput(session, 'directory')
+  })
+  
   
   observeEvent(input$get_tags, {
-    directory = input$directory
-    print(dirname(rstudioapi::getSourceEditorContext()$path))
+    directory = readDirectoryInput(session, 'directory')
     annots = input$file2
     indices = input$file3
     cmd <- paste("perl", "get_tags.pl", "-files", directory, "-annot",annots,"-indices",indices,"-cutoff 0")
     system(cmd)
-    stats$df_data = read.table(paste0(directory,"_stats"),header=T)
+    stats$df_data = read.table(paste0(dirname(directory),"/",basename(directory),"_stats"),header=T)
     s$df_data = length(levels(stats$df_data$filename))
-    pos$df_data = read.table(paste0(directory,"_positions_separate"),header=F,sep="\t",stringsAsFactors = FALSE)
+    pos$df_data = read.table(paste0(dirname(directory),"/",basename(directory),"_positions_separate"),header=F,sep="\t",stringsAsFactors = FALSE)
   })
   
   observeEvent(input$load_results, {
-    directory = input$directory
-    stats$df_data = read.table(paste0(directory,"_stats"),header=T)
-    print(length(levels(stats$df_data$filename)))
+    directory = readDirectoryInput(session, 'directory')
+    stats$df_data = read.table(paste0(dirname(directory),"/",basename(directory),"_stats"),header=T)
+    #print(length(levels(stats$df_data$filename)))
     s$df_data = length(levels(stats$df_data$filename))
-    pos$df_data = read.table(paste0(directory,"_positions_separate"),header=F,sep="\t",stringsAsFactors = FALSE)
+    pos$df_data = read.table(paste0(dirname(directory),"/",basename(directory),"_positions_separate"),header=F,sep="\t",stringsAsFactors = FALSE)
   })
   
   output$stats <- DT::renderDataTable({
@@ -182,6 +201,7 @@ server <- function(input, output,session) {
   
   Plot2 <- reactive({
     choice1 = input$samplePlot
+    print(choice1) 
     validate(
       need(input$samplePlot != input$sample5, "Please choose a different sample")
     )
